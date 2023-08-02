@@ -1,59 +1,125 @@
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
 header {
-    background-color: #007BFF;
-    color: #FFF;
-    text-align: center;
-    padding: 20px 0;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  padding: 20px;
 }
 
-h1 {
-    margin: 0;
+header h1 {
+  margin: 0;
 }
 
 .search-container {
-    margin-top: 10px;
+  margin: 20px auto;
+  max-width: 400px;
 }
 
-input[type="text"] {
-    padding: 8px;
-    font-size: 16px;
+.search-container input[type="text"] {
+  width: 70%;
+  padding: 10px;
+  font-size: 16px;
 }
 
-button {
-    padding: 8px 20px;
-    font-size: 16px;
-    background-color: #FFF;
-    color: #007BFF;
-    border: none;
-    cursor: pointer;
+.search-container button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #4CAF50;
+  color: #fff;
+  border: none;
+  cursor: pointer;
 }
 
-button:hover {
-    background-color: #007BFF;
-    color: #FFF;
+.filters {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.filters h2 {
+  margin-right: 10px;
+}
+
+.filters button {
+  margin: 0 10px;
+  padding: 5px 10px;
+  font-size: 14px;
+  background-color: #4CAF50;
+  color: #fff;
+  border: none;
+  cursor: pointer;
 }
 
 main {
-    padding: 20px;
+  padding: 20px;
 }
 
-.recipe {
-    border: 1px solid #CCC;
-    padding: 10px;
-    margin-bottom: 10px;
+#recipesContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-gap: 20px;
 }
 
-.recipe h2 {
-    margin: 0;
+.recipe-card {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
 }
 
-.recipe img {
-    max-width: 100%;
-    height: auto;
-    margin-bottom: 10px;
+.recipe-card img {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+}
+
+#recipeDetails {
+  display: none;
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #ddd;
+}
+
+#recipeDetails h2 {
+  margin-top: 0;
+}
+
+#recipeDetails ul {
+  padding-left: 20px;
+}
+
+#recipeDetails p {
+  margin-bottom: 0;
+}
+
+#categoriesContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.category-card {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  width: 200px;
+}
+
+.category-card img {
+  width: 100%;
+  max-height: 150px;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+.category-card p {
+  margin: 0;
 }

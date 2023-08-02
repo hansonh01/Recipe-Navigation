@@ -3,21 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recipe Finder</title>
+    <title>Recipe Navigator</title>
     <script src="index.js" charset="utf-8"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
-        <h1>Recipe Finder</h1>
+        <h1>Recipe Navigator</h1>
         <div class="search-container">
             <input type="text" id="searchInput" placeholder="Search for recipes...">
             <button id="searchButton">Search</button>
         </div>
+        <div class="filters">
+            <div class="filter-group">
+              <button class="filter-button" id="category">Categories</button>
+            </div>
+            <div class="filter-group">
+              <button class="filter-button" id="ingredient">Ingredients</button>
+            </div>
+            <button id="randomButton">Generate Random Meal</button>
+          </div>
     </header>
-
     <main>
-        <div id="recipesContainer"></div>
+        <div id="categoriesContainer">
+        </div>
+        <div id="recipesContainer">
+        </div>
+        <div id="recipeDetails">
+        </div>
     </main>
 </body>
 </html>
+

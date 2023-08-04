@@ -2,22 +2,33 @@ const localHostAPIUrl = 'http://localhost:3000';
 
 document.addEventListener('DOMContentLoaded',(e)=>{
     e.preventDefault();
-    
-    document.getElementById('category').addEventListener('click',()=>{
-        fetchCategories();
+
+    const page = document.getElementById('contentContainer');
+
+    document.getElementById('category').addEventListener('click',(e)=>{
+        e.preventDefault();
+        resetPage(page);
+        fetchCategories(page);
     });
 
-    document.getElementById('randomButton').addEventListener('click',()=>{
-        fetchRandomMeals();
+    document.getElementById('cuisine').addEventListener('click',(e)=>{
+        e.preventDefault();
+        resetPage(page);
+        fetchCuisines(page);
+    })
+
+    document.getElementById('randomButton').addEventListener('click',(e)=>{
+        e.preventDefault();
+        resetPage(page);
+        fetchRandomMeals(page);
     });
+
 });
 
-function fetchCategories(){
-    const categoriesContainer = document.getElementById('categoriesContainer');
+function fetchCategories(categoriesContainer){
     fetch(`${localHostAPIUrl}/categories`)
         .then(resp=>resp.json())
         .then(data=>{
-            categoriesContainer.innerText = '';
             data.forEach(category=>{
                 categoriesContainer.append(displayCategories(category));
             });
@@ -39,20 +50,37 @@ function displayCategories(category){
     return categoryCard;
 };
 
-function fetchRandomMeals(){
+function fetchCuisines(cuisinePage){
+    fetch(`${localHostAPIUrl}/cuisine`)
+        .then(resp=>resp.json())
+        .then(data=>{
+            data.forEach(cuisine=>{
+                const cuisineItems = listOutCuisine(cuisine);
+                cuisinePage.append(cuisineItems);
+            });
+        });
+};
+
+function listOutCuisine(){
+    
+    const typeOfCuisines = document.createElement('li');
+    typeOfCuisines.textContent = cuisine.strArea;
+
+    return typeOfCuisines;
+}
+
+function fetchRandomMeals(recipeDetails){
     const randomMealUrl = 'https://www.themealdb.com/api/json/v1/1/random.php';
 
     fetch(randomMealUrl)
         .then(resp=>resp.json())
         .then(data=>{
             const randomMeal = data.meals[0];
-            displayMeals(randomMeal);
+            displayMeals(randomMeal,recipeDetails);
         });
 };
 
-function displayMeals(meal){
-    const recipeDetails = document.getElementById('recipeDetails');
-    recipeDetails.innerText = '';
+function displayMeals(meal,recipeDetails){
 
     const mealHeading = document.createElement('h2');
     mealHeading.textContent = meal.strMeal;
@@ -75,12 +103,9 @@ function displayMeals(meal){
         };
     };
     recipeDetails.append(mealHeading,mealImage,instruction,ingredientsList);
-
     recipeDetails.style.display = 'block';
 };
 
-
-//1. Categories
-//2. Cusines xx
-//3. Ingredients
-//4. Random
+function resetPage(page){
+    page.innerText = '';
+};

@@ -33,24 +33,70 @@ function fetchCategories(caC){
         .then(resp=>resp.json())
         .then(data=>{
             data.forEach(category=>{
-                caC.append(displayingCategories(category))
+                caC.append(displayingCategories(category,caC));
             });
         });
 };
 
-function displayingCategories(category){
+function displayingCategories(category,container){
     const categoryCard = document.createElement('div');
     categoryCard.classList.add('category-card');
 
     const img = document.createElement('img');
     img.src = category.strCategoryThumb;
     img.alt = category.strCategory;
+    img.addEventListener('click',(e)=>{
+        e.preventDefault();
+        filterByCategories(category.strCategory,container);
+    });
 
     const title = document.createElement('p');
     title.textContent = category.strCategory;
 
     categoryCard.append(img,title);
     return categoryCard;
+};
+
+function filterByCategories(category, container){
+    const categoryUrl = `https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`;
+    fetch(categoryUrl)
+        .then(resp=>resp.json())
+        .then(data=>{
+            container.innerText = '';
+            data.meals.forEach(meal=>{
+                container.append(categoryImage(meal,container));
+            });
+        });
+};
+
+function categoryImage(meal,container){
+    const mealCard = document.createElement('div');
+    mealCard.classList.add('category-card');
+
+    const mealImage = document.createElement('img');
+    mealImage.src = meal.strMealThumb;
+    mealImage.alt = meal.strMeal;
+    mealImage.addEventListener('click',(e)=>{
+        e.preventDefault();
+        lookUpMealId(meal.idMeal,container);
+    });
+
+    const mealName = document.createElement('p');
+    mealName.textContent = meal.strMeal;
+
+    mealCard.append(mealImage, mealName);
+    return mealCard;
+};
+
+function lookUpMealId(mealId,container){
+    const lookUpUrl = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealId}`
+    fetch(lookUpUrl)
+        .then(resp=>resp.json())
+        .then(data=>{
+            container.innerText = '';
+            const theMeal = data.meals[0];
+            displayRandomMeal(theMeal,container);
+        });
 };
 
 function fetchCuisines(cuC){

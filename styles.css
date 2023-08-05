@@ -110,6 +110,14 @@ main {
   width: 200px;
 }
 
+.cuisine-item ul {
+  margin: 10px 0;
+  padding: 8px;
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+  text-align: center;
+}
+
 .cuisine-item p {
   margin: 0;
 }

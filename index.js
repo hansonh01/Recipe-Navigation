@@ -3,39 +3,42 @@ const localHostAPIUrl = 'http://localhost:3000';
 document.addEventListener('DOMContentLoaded',(e)=>{
     e.preventDefault();
 
-    const page = document.getElementById('contentContainer');
+    const mC = document.getElementById('mainContainer');
+    const caC = document.getElementById('categoriesContainer');
+    const cuC = document.getElementById('cuisinesContainer');
+    const rC = document.getElementById('randomContainer');
 
     document.getElementById('category').addEventListener('click',(e)=>{
         e.preventDefault();
-        resetPage(page);
-        fetchCategories(page);
+        resetPage(mC);
+        fetchCategories(caC);
     });
 
     document.getElementById('cuisine').addEventListener('click',(e)=>{
         e.preventDefault();
-        resetPage(page);
-        fetchCuisines(page);
-    })
+        resetPage(mC);
+        fetchCuisines(cuC);
+    });
 
     document.getElementById('randomButton').addEventListener('click',(e)=>{
         e.preventDefault();
-        resetPage(page);
-        fetchRandomMeals(page);
+        resetPage(mC);
+        fetchRandomMeals(rC);
     });
 
 });
 
-function fetchCategories(categoriesContainer){
+function fetchCategories(caC){
     fetch(`${localHostAPIUrl}/categories`)
         .then(resp=>resp.json())
         .then(data=>{
             data.forEach(category=>{
-                categoriesContainer.append(displayCategories(category));
+                caC.append(displayingCategories(category))
             });
         });
 };
 
-function displayCategories(category){
+function displayingCategories(category){
     const categoryCard = document.createElement('div');
     categoryCard.classList.add('category-card');
 
@@ -43,44 +46,47 @@ function displayCategories(category){
     img.src = category.strCategoryThumb;
     img.alt = category.strCategory;
 
-    const selection = document.createElement('p');
-    selection.textContent = category.strCategory;
+    const title = document.createElement('p');
+    title.textContent = category.strCategory;
 
-    categoryCard.append(img,selection);
+    categoryCard.append(img,title);
     return categoryCard;
 };
 
-function fetchCuisines(cuisinePage){
+function fetchCuisines(cuC){
     fetch(`${localHostAPIUrl}/cuisine`)
         .then(resp=>resp.json())
         .then(data=>{
-            data.forEach(cuisine=>{
-                const cuisineItems = listOutCuisine(cuisine);
-                cuisinePage.append(cuisineItems);
+            data.forEach(type=>{
+                cuC.append(displayingCuisine(type));
             });
         });
 };
 
-function listOutCuisine(){
+function displayingCuisine(type){
+    const name = document.createElement('ul');
+    name.textContent = type.strArea;
+    name.classList.add('cuisine-item');
     
-    const typeOfCuisines = document.createElement('li');
-    typeOfCuisines.textContent = cuisine.strArea;
+    return name;
+};
 
-    return typeOfCuisines;
-}
-
-function fetchRandomMeals(recipeDetails){
+function fetchRandomMeals(rC){
     const randomMealUrl = 'https://www.themealdb.com/api/json/v1/1/random.php';
-
     fetch(randomMealUrl)
         .then(resp=>resp.json())
         .then(data=>{
             const randomMeal = data.meals[0];
-            displayMeals(randomMeal,recipeDetails);
+            displayRandomMeal(randomMeal,rC);
         });
 };
 
-function displayMeals(meal,recipeDetails){
+function displayRandomMeal(meal,page){
+    const mealCard = document.createElement('div');
+    mealCard.classList.add('random-card');
+
+    const contentContainer = document.createElement('div');
+    contentContainer.classList.add('content-container');
 
     const mealHeading = document.createElement('h2');
     mealHeading.textContent = meal.strMeal;
@@ -91,8 +97,10 @@ function displayMeals(meal,recipeDetails){
     
     const instruction = document.createElement('p');
     instruction.textContent = meal.strInstructions;
+    instruction.classList.add('content', 'right-align');
 
     const ingredientsList = document.createElement('ul');
+    ingredientsList.classList.add('content', 'left-align');
     for(let i = 0; i <= 20; i++){
         const ingredient = meal['strIngredient'+i];
         const measurements = meal['strMeasure'+i];
@@ -100,12 +108,17 @@ function displayMeals(meal,recipeDetails){
             const ingredientItem = document.createElement('li');
             ingredientItem.textContent = `${measurements} ${ingredient}`;
             ingredientsList.appendChild(ingredientItem);
+            
         };
     };
-    recipeDetails.append(mealHeading,mealImage,instruction,ingredientsList);
-    recipeDetails.style.display = 'block';
+    contentContainer.append(ingredientsList,instruction);
+    mealCard.append(mealHeading,mealImage,contentContainer);
+    page.append(mealCard);
+    page.style.display = 'block';
 };
 
 function resetPage(page){
-    page.innerText = '';
+    page.childNodes.forEach(child=>{
+        child.innerText = '';
+    });
 };

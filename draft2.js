@@ -1,5 +1,8 @@
-document.addEventListener('DOMContentLoaded',()=>{
-    const homeApi = 'http://localhost:3000';
+const localHostAPIUrl = 'http://localhost:3000/';
+
+
+document.addEventListener('DOMContentLoaded',(e)=>{
+    e.preventDefault();
 
     const mainC = document.getElementById('mainContainer');
     const categoryC = document.getElementById('categoriesContainer');
@@ -8,67 +11,82 @@ document.addEventListener('DOMContentLoaded',()=>{
 
     document.getElementById('category').addEventListener('click',()=>{
         resetPage(mainC);
-        loadSelection(categoryC, `${homeApi}/categories`, createCategoryCard);
+        loadSelection(categoryC,`categories`);
     });
-    /*
+
     document.getElementById('cuisine').addEventListener('click',()=>{
         resetPage(mainC);
-        loadSelection(cuisineC,`${homeApi}/cuisine`, createCategoryCard);
+        loadSelection(cuisineC,`cuisine`);
     });
-    */
+
 });
 
-function loadSelection(container,url,displayFunction){
-    fetch(url)
+function loadSelection(container,path){
+    fetch(`${localHostAPIUrl}${path}`)
         .then(resp=>resp.json())
         .then(data=>{
             data.forEach(meal=>{
-                displayFunction(container,meal);
+                if(path === 'categories'){
+                    container.append(categoryCard(meal,container));
+                }if (path === 'cuisine'){
+                    container.append(cuisineCard(meal,container));
+                };
             });
         });
 };
 
-function createCategoryCard(container,meal){
+function categoryCard(meal,container){
     const categoryCard = document.createElement('div');
     categoryCard.classList.add('category-card');
 
     const img = document.createElement('img');
     img.src = meal.strCategoryThumb;
     img.alt = meal.strCategory;
-
-    img.addEventListener('click', () => {
-        container.innerText='';
-        selectedCategory(container, `https://www.themealdb.com/api/json/v1/1/filter.php?c=${meal.strCategory}`);
+    img.addEventListener('click',(e)=>{
+        e.preventDefault();
+        const filterUrl = `https://www.themealdb.com/api/json/v1/1/filter.php?c=${meal.strCategory}`;
+        filtered(filterUrl,container);
     });
 
     const title = document.createElement('p');
-    title.textContent = meal.strCategory;
+    title.textContent = category.strCategory;
 
     categoryCard.append(img,title);
-    container.append(categoryCard);
+    return categoryCard;
 };
 
-function selectedCategory(container,categoriesUrl){
-    fetch(categoriesUrl)
+function cuisineCard(cuisine,container){
+    const cuisineName = document.createElement('ul');
+    cuisineName.classList.add('cuisine-item');
+    cuisineName.textContent = cuisine.strArea;
+
+    cuisineName.addEventListener('click',(e)=>{
+        filtered(cuisine,container);
+    });
+};
+
+function filtered(filterUrl,container){
+    
+    fetch(filterUrl)
         .then(resp=>resp.json())
         .then(data=>{
-            data.meals.forEach(meal=>{
-                displayCategorySelections(container,meal);
-            });
-        });
+            data.forEach(meal=>{
+                displayCategory(meal,container);
+            })
+        })
 };
 
-function displayCategorySelections(container,meal){
-    const mealCard = document.createElement('div');
+function displayCategory(meal,container){
+    const mealCard = document.createElement('section');
     mealCard.classList.add('category-card');
 
     const img = document.createElement('img');
     img.src = meal.strMealThumb;
     img.alt = meal.strMeal;
 
-    img.addEventListener('click', () => {
-        container.innerText='';
-        searchThroughId(container, `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${meal.idMeal}`);
+    img.addEventListener('click',()=>{
+        container.innerText = '';
+        searchMealId(meal.idMeal,container);
     });
 
     const p = document.createElement('p');
@@ -78,16 +96,16 @@ function displayCategorySelections(container,meal){
     container.append(mealCard);
 };
 
-function searchThroughId(container,searchIdUrl){
-    fetch(searchIdUrl)
+function searchMealId(id,container){
+    fetch(`${searchIdUrl}${id}`)
         .then(resp=>resp.json())
-        .then(data=>{
-            const selectedMeal = data.meals[0];
-            mealBio(container,selectedMeal);
+        .then(meal=>{
+            const selectedMeal = meal.meals[0];
+            mealBio(selectedMeal,container);
         });
 };
 
-function mealBio(container,meal){
+function mealBio(meal,container){
     const mealCard = document.createElement('div');
     mealCard.classList.add('random-card');
 

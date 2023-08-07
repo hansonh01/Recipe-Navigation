@@ -171,3 +171,32 @@ main {
 .left-align {
   text-align: left;
 }
+
+.tags-tool {
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 12px;
+  transition: transform 0.1s ease-in-out;
+}
+
+.comment {
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.comment strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.comment p {
+  margin: 0;
+}
+
+.hidden {
+  display: none;
+}

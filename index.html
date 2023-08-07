@@ -25,11 +25,20 @@
           </div>
     </header>
     <main id="mainContainer">
-        <div id="categoriesContainer"></div>
-        <div id="cuisinesContainer"></div>
-        <div id="randomContainer"></div>
-        <div id="commentsContainer"></div>
+      <div id="categoriesContainer"></div>
+      <div id="cuisinesContainer"></div>
+      <div id="randomContainer"></div>
     </main>
+    <div id="commentsContainer"></div>
+      <div id="commentFormContainer" class="hidden">
+          <form id="commentForm">
+            <label for="name">Name:</label>
+            <input type="text" id="name" required>
+            <label for="comment">Comment:</label>
+            <textarea id="comment" rows="4" required></textarea>
+            <input type="submit" value="Submit">
+          </form>
+      </div>
 </body>
 </html>
 

@@ -63,6 +63,7 @@ function loadSelection(container,url,displayFunction){
 };
 
 function createCategoryCard(container,meal){
+    
     const categoryCard = document.createElement('div');
     categoryCard.classList.add('category-card');
 
@@ -87,6 +88,7 @@ function createCategoryCard(container,meal){
 };
 
 function createCuisineCard(container,meal){
+    container.innerText='';
     const cuisineCard = document.createElement('button');
     cuisineCard.textContent = meal.strArea;
     cuisineCard.classList.add('cuisine-item');
@@ -168,8 +170,6 @@ function mealBio(container, meal){
             tags.remove();
         };
     });
-
-    //commentForm(container);
     
     const pT = document.createElement('h4');
     pT.textContent = 'Instruction: ';
@@ -198,40 +198,80 @@ function mealBio(container, meal){
     mealCard.append(header,img,contentContainer);
     container.append(mealCard);
     container.style.display = 'block';
+
+    commentForm(meal);
+
+    loadComments(meal.idMeal,container);
 };
-/*
-function commentForm(container){
-    const commentForm = container.querySelector('#commentForm');
-    const commentFormContainer = container.querySelector('#commentFormContainer');
+
+function commentForm(meal) {
+    const commentFormContainer = document.getElementById('commentFormContainer');
     commentFormContainer.classList.remove('hidden');
 
+    const commentForm = document.getElementById('commentForm');
     commentForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-
-        const name = e.target.querySelector('#name').value;
-        const comment = e.target.querySelector('#comment').value;
-
-        commentFormContainer.append(displayComment(name, comment));
-
-        e.target.reset();
+        submitComment(e, meal, commentFormContainer);
     });
 };
 
-function displayComment(name,comment){
+
+function submitComment(e, meal, commentFormContainer) {
+    e.preventDefault();
+    const homeApi = 'http://localhost:3000';
+
+    const name = document.getElementById('name');
+    const comments = document.getElementById('comment');
+
+    const newComment = {
+        name:name.value,
+        comment:comments.value,
+        idMeal:meal.idMeal
+    };
+
+    fetch(`${homeApi}/comments`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newComment),
+    })
+    .then(resp => resp.json())
+    .then(savedComment => {
+        e.target.reset();
+
+        const newCommentDiv = createCommentElement(savedComment);
+        commentFormContainer.appendChild(newCommentDiv);
+    });
+};
+
+function createCommentElement(comment) {
     const commentDiv = document.createElement('div');
     commentDiv.classList.add('comment');
-    
+
     const nameElement = document.createElement('strong');
-    nameElement.textContent = name;
-    
+    nameElement.textContent = comment.name;
+
     const commentText = document.createElement('p');
-    commentText.textContent = comment;
-    
-    commentDiv.append(nameElement,commentText);
-    
+    commentText.textContent = comment.comment;
+
+    commentDiv.append(nameElement, commentText);
+
     return commentDiv;
 };
-*/
+
+function loadComments(mealId, commentFormContainer) {
+    const homeApi = 'http://localhost:3000';
+    fetch(`${homeApi}/comments?mealId=${mealId}`)
+    .then(resp => resp.json())
+    .then(comments => {
+        comments.forEach(comment => {
+            const commentDiv = createCommentElement(comment);
+            commentFormContainer.appendChild(commentDiv);
+        });
+    });
+};
+
+
 function resetPage(page){
     page.childNodes.forEach(child=>{
         child.innerText = '';

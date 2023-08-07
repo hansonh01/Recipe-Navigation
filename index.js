@@ -1,30 +1,42 @@
-document.addEventListener('DOMContentLoaded',()=>{
+document.addEventListener('DOMContentLoaded',(e)=>{
+    e.preventDefault();
+
     const homeApi = 'http://localhost:3000';
+    const randomApi = 'https://www.themealdb.com/api/json/v1/1/random.php';
 
     const mainC = document.getElementById('mainContainer');
     const categoryC = document.getElementById('categoriesContainer');
     const cuisineC = document.getElementById('cuisinesContainer');
     const randomC = document.getElementById('randomContainer');
 
-    document.getElementById('category').addEventListener('click',()=>{
-        resetPage(mainC);
-        loadSelection(categoryC, `${homeApi}/categories`, createCategoryCard);
-    });
-    /*
-    document.getElementById('cuisine').addEventListener('click',()=>{
-        resetPage(mainC);
-        loadSelection(cuisineC,`${homeApi}/cuisine`, createCategoryCard);
-    });
-    */
+    const filters = {
+        'category':{ container: categoryC, url:`${homeApi}/categories`,displayFunction: createCategoryCard },
+        'cuisine':{ container: cuisineC, url: `${homeApi}/cuisine`, displayFunction: createCuisineCard },
+        'randomButton':{ container: randomC, url: randomApi, displayFunction: mealBio }
+    };
+    
+    for(const filter in filters) {
+        if(filters.hasOwnProperty(filter)){
+            document.getElementById(filter).addEventListener('click',()=>{
+                resetPage(mainC);
+                loadSelection(filters[filter].container, filters[filter].url, filters[filter].displayFunction);
+            });
+        };
+    };
 });
 
 function loadSelection(container,url,displayFunction){
     fetch(url)
         .then(resp=>resp.json())
         .then(data=>{
-            data.forEach(meal=>{
-                displayFunction(container,meal);
-            });
+            if(Array.isArray(data)){
+                data.forEach(meal=>{
+                    displayFunction(container,meal);
+                });
+            }else if (data.meals){
+                const randomMeal = data.meals[0];
+                displayFunction(container,randomMeal);
+            };
         });
 };
 
@@ -38,7 +50,7 @@ function createCategoryCard(container,meal){
 
     img.addEventListener('click', () => {
         container.innerText='';
-        selectedCategory(container, `https://www.themealdb.com/api/json/v1/1/filter.php?c=${meal.strCategory}`);
+        selectedInput(container, `https://www.themealdb.com/api/json/v1/1/filter.php?c=${meal.strCategory}`);
     });
 
     const title = document.createElement('p');
@@ -48,17 +60,29 @@ function createCategoryCard(container,meal){
     container.append(categoryCard);
 };
 
-function selectedCategory(container,categoriesUrl){
+function createCuisineCard(container,meal){
+    const cuisineCard = document.createElement('button');
+    cuisineCard.textContent = meal.strArea;
+    cuisineCard.classList.add('cuisine-item');
+    cuisineCard.addEventListener('click',(e)=>{
+        e.preventDefault();
+        selectedInput(container,`https://www.themealdb.com/api/json/v1/1/filter.php?a=${meal.strArea}`);
+    });
+    container.append(cuisineCard);
+};
+
+function selectedInput(container,categoriesUrl){
     fetch(categoriesUrl)
         .then(resp=>resp.json())
         .then(data=>{
+            container.innerText = '';
             data.meals.forEach(meal=>{
-                displayCategorySelections(container,meal);
+                displaySelections(container,meal);
             });
         });
 };
 
-function displayCategorySelections(container,meal){
+function displaySelections(container,meal){
     const mealCard = document.createElement('div');
     mealCard.classList.add('category-card');
 
@@ -101,11 +125,17 @@ function mealBio(container,meal){
     img.src = meal.strMealThumb;
     img.alt = meal.strMeal;
     
+    const pT = document.createElement('h4');
+    pT.textContent = 'Instruction: ';
+    pT.classList.add('content', 'title');
+
     const p = document.createElement('p');
     p.textContent = meal.strInstructions;
     p.classList.add('content', 'center-align');
+    pT.appendChild(p);
 
-    const ul = document.createElement('ul');
+    const ul = document.createElement('h4');
+    ul.textContent = 'Ingredients: ';
     ul.classList.add('content', 'left-align');
     for(let i = 0; i <= 20; i++){
         const ingredient = meal['strIngredient'+i];
@@ -117,7 +147,7 @@ function mealBio(container,meal){
             
         };
     };
-    contentContainer.append(ul,p);
+    contentContainer.append(ul,pT);
     mealCard.append(header,img,contentContainer);
     container.append(mealCard);
     container.style.display = 'block';

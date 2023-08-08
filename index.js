@@ -8,6 +8,10 @@ document.addEventListener('DOMContentLoaded',()=>{
     const categoryC = document.getElementById('categoriesContainer');
     const cuisineC = document.getElementById('cuisinesContainer');
     const randomC = document.getElementById('randomContainer');
+    const commentForm = document.getElementById('commentForm');
+    const commentsContainer = document.getElementById('commentsContainer');
+    commentForm.classList.add('hidden');
+    commentsContainer.classList.add('hidden');
 
     const filters = {
         'category':{ container: categoryC, url:`${homeApi}/categories`,displayFunction: createCategoryCard },
@@ -134,15 +138,52 @@ function searchThroughId(container,searchIdUrl){
     fetch(searchIdUrl)
         .then(resp=>resp.json())
         .then(data=>{
+            container.innerText = '';
             const selectedMeal = data.meals[0];
             mealBio(container,selectedMeal);
+            const commentsC = document.getElementById('commentsContainer');
+            loadComments(selectedMeal.idMeal,commentsC);
         });
 };
 
+function loadComments(mealId, container) {
+    fetch(`http://localhost:3000/comments?idMeal=${mealId}`)
+    .then(resp => resp.json())
+    .then(comments => {
+        container.innerText = '';
+        const commentsHeader = document.createElement('div');
+        commentsHeader.textContent = "Comments: ";
+        container.appendChild(commentsHeader);
+        if(comments.length === 0){
+            const noComments = document.createElement('p');
+            noComments.textContent = 'No comments yet for this meal.';
+            container.append(noComments);
+        }else{
+            comments.forEach(comment => {
+                container.append(createCommentElement(comment));
+            });
+        }
+    });
+};
+
+function createCommentElement(comment) {
+    const commentCard = document.createElement('div');
+    commentCard.classList.add('comment');
+    //commentCard.id = comment.idMeal;
+
+    const userName = document.createElement('h2');
+    userName.textContent = `Comment by: ${comment.name}`;
+
+    const userComment = document.createElement('p');
+    userComment.textContent = comment.comment;
+
+    commentCard.append(userName, userComment);
+
+    return commentCard;
+};
+
 function mealBio(container, meal){
-    container.innerText = '';
     const mealCard = document.createElement('div');
-    mealCard.classList.add('random-card');
 
     const contentContainer = document.createElement('div');
     contentContainer.classList.add('content-container');
@@ -193,84 +234,44 @@ function mealBio(container, meal){
             
         };
     };
+    
+    const form = document.getElementById('commentForm');
+    const commentC = document.getElementById('commentsContainer');
+    form.classList.remove('hidden');
+    commentC.classList.remove('hidden');
+    form.addEventListener('submit',(e)=>{
+        submitComment(e,meal.idMeal,container)
+    });
 
     contentContainer.append(ul,pT);
     mealCard.append(header,img,contentContainer);
     container.append(mealCard);
     container.style.display = 'block';
-
-    commentForm(meal);
-
-    loadComments(meal.idMeal,container);
 };
 
-function commentForm(meal) {
-    const commentFormContainer = document.getElementById('commentFormContainer');
-    commentFormContainer.classList.remove('hidden');
-
-    const commentForm = document.getElementById('commentForm');
-    commentForm.addEventListener('submit', (e) => {
-        submitComment(e, meal, commentFormContainer);
-    });
-};
-
-
-function submitComment(e, meal, commentFormContainer) {
+function submitComment(e,mealId, commentsC) {
     e.preventDefault();
-    const homeApi = 'http://localhost:3000';
 
-    const name = document.getElementById('name');
-    const comments = document.getElementById('comment');
+    const name = document.getElementById('user-comments');
+    const comments = document.getElementById('new-comments');
 
-    const newComment = {
-        name:name.value,
-        comment:comments.value,
-        idMeal:meal.idMeal
-    };
-
-    fetch(`${homeApi}/comments`, {
+    fetch(`http://localhost:3000/comments`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(newComment),
+        body: JSON.stringify({
+            name:name.value,
+            comment:comments.value,
+            idMeal:mealId
+        }),
     })
     .then(resp => resp.json())
-    .then(savedComment => {
+    .then(comment => {
         e.target.reset();
-
-        const newCommentDiv = createCommentElement(savedComment);
-        commentFormContainer.appendChild(newCommentDiv);
+        commentsC.appendChild(createCommentElement(comment));
     });
 };
-
-function createCommentElement(comment) {
-    const commentDiv = document.createElement('div');
-    commentDiv.classList.add('comment');
-
-    const nameElement = document.createElement('strong');
-    nameElement.textContent = comment.name;
-
-    const commentText = document.createElement('p');
-    commentText.textContent = comment.comment;
-
-    commentDiv.append(nameElement, commentText);
-
-    return commentDiv;
-};
-
-function loadComments(mealId, commentFormContainer) {
-    const homeApi = 'http://localhost:3000';
-    fetch(`${homeApi}/comments?mealId=${mealId}`)
-    .then(resp => resp.json())
-    .then(comments => {
-        comments.forEach(comment => {
-            const commentDiv = createCommentElement(comment);
-            commentFormContainer.appendChild(commentDiv);
-        });
-    });
-};
-
 
 function resetPage(page){
     page.childNodes.forEach(child=>{

@@ -1,202 +1,223 @@
+* {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+
+}
+  
 body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
+    padding: 1rem;
+    text-align: center;
+    background-color: #fafafa;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
-
+  
 header {
-  background-color: #333;
-  color: #fff;
-  text-align: center;
-  padding: 20px;
+    padding: 20px;
+    width: 100%;
+    color: #fff;
+    background-color: #333;
+    text-align: center;
 }
-
-header h1 {
-  margin: 0;
-}
-
+  
 .search-container {
-  margin: 20px auto;
-  max-width: 400px;
+    margin: 20px auto;
+    max-width: 400px;
 }
-
+  
 .search-container input[type="text"] {
-  width: 70%;
-  padding: 10px;
-  font-size: 16px;
+    font-size: 16px;
+    padding: 10px;
+    border: 1px solid black;
+    background-color: white;
+    width: 70%;
+    border-radius: 5px 0 0 5px;
+    width: 70%;
 }
-
+  
 .search-container button {
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #4CAF50;
-  color: #fff;
-  border: none;
-  cursor: pointer;
+    font-size: 16px;
+    padding: 10px 20px;
+    color: #fff;
+    border: none;
+    background-color: #4CAF50;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
 }
-
+  
 .filters {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
 }
-
-.filters h2 {
-  margin-right: 10px;
+  
+.filter-group {
+    margin-right: 10px;
 }
-
+  
 .filters button {
-  margin: 0 10px;
-  padding: 5px 10px;
-  font-size: 14px;
-  background-color: #4CAF50;
-  color: #fff;
-  border: none;
-  cursor: pointer;
+    font-size: 14px;
+    padding: 5px 10px;
+    color: #fff;
+    border: none;
+    background-color: #4CAF50;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+  
+#mainContainer,#categoriesContainer,#cuisinesContainer {
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    padding: 20px;
+    margin-top: 20px;
 }
 
-main {
-  padding: 20px;
+.category-card,.cuisine-item {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    width: 200px;
 }
-
-#mainContainer {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-#categoriesContainer {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-.category-card {
-  border: 1px solid #ddd;
-  padding: 10px;
-  text-align: center;
-  cursor: pointer;
-  width: 200px;
-}
-
+  
 .category-card img {
-  width: 100%;
-  max-height: 150px;
-  object-fit: cover;
-  margin-bottom: 10px;
+    width: 100%;
+    max-height: 150px;
+    object-fit: cover;
+    margin-bottom: 10px;
 }
-
-.category-card p {
-  margin: 0;
-}
-
-#cuisinesContainer {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.cuisine-item {
-  border: 1px solid #ddd;
-  padding: 10px;
-  text-align: center;
-  cursor: pointer;
-  width: 200px;
+  
+.category-card p,.cuisine-item p {
+    margin: 0;
 }
 
 .cuisine-item ul {
-  margin: 10px 0;
-  padding: 8px;
-  border: 1px solid #ddd;
-  background-color: #f9f9f9;
-  text-align: center;
-}
-
-.cuisine-item p {
-  margin: 0;
-}
-
-#randomContainer {
-  display: none;
-  margin-top: 20px;
-  padding: 20px;
-  border: 1px solid #ddd;
-}
-
-.random-card h2 {
-  margin-top: 0;
-}
-
-.random-card ul {
-  padding-left: 20px;
-}
-
-.random-card p {
-  margin-bottom: 0;
-}
-
-.random-card img {
-  width: auto;
-  height: auto;
-  max-width: 100%;
-  max-height: 150px;
-  display: block;
-  margin: 0 auto;
+    margin: 10px 0;
+    padding: 8px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    text-align: center;
 }
 
 .content-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border: 2px solid #ddd;
-  padding: 10px;
-  margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 2px solid #ddd;
+    padding: 10px;
+    margin-top: 10px;
 }
-
+  
 .content {
   flex: 1;
   text-align: center;
 }
-
+  
 .right-align {
   text-align: right;
 }
-
+  
 .left-align {
   text-align: left;
 }
+  
+#meal-detail {
+    position: relative;
+    margin-top: 1rem;
+}
+  
+.detail-image {
+    height: 350px;
+}
+  
+.meal-name {
+    position: absolute;
+    left: 10px;
+    padding: 0.25rem 5rem 0.25rem 1rem;
+    background-color: rgba(255, 255, 255, 0.8);
+    bottom: 60px;
+}
+
+.commentsBox {
+    border: 2px solid #333;
+    background-color: #f7f7f7;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 10px auto;
+    margin-left: auto;
+    width: 50%;
+}
+  
+#meal-comment {
+    margin-top: 20px;
+    font-size:18px;
+}
+  
+#add-comment {
+    margin-top: 20px;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+  
+#add-comment label {
+    margin-bottom: 5px;
+    font-size: 18px;
+}
+  
+#user-comments,
+#new-comments {
+    font-size: 18px;
+    border: 1px solid black;
+    background-color: white;
+    padding: 10px;
+    margin: 5px 0;
+    width: 100%;
+}
+  
+input[type="submit"] {
+    font-size: 18px;
+    color: white;
+    border: 1px solid white;
+    background-color: black;
+    cursor: pointer;
+    transition: all 0.3s;
+    padding: 8px 16px;
+}
+  
+input[type="submit"]:active {
+    background-color: gray;
+}
+  
+form h4 {
+    width: 100%;
+    padding: 5px;
+    margin: 10px 0;
+    color: white;
+    background-color: black;
+    font-size: 18px;
+}
 
 .tags-tool {
-  position: fixed;
-  background-color: rgba(0, 0, 0, 0.8);
-  color: white;
-  padding: 5px;
-  border-radius: 5px;
-  font-size: 12px;
-  transition: transform 0.1s ease-in-out;
-}
-
-.comment {
-  border: 1px solid #ddd;
-  padding: 10px;
-  margin-bottom: 10px;
-}
-
-.comment strong {
-  display: block;
-  margin-bottom: 5px;
-}
-
-.comment p {
-  margin: 0;
+    position: fixed;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 12px;
+    transition: transform 0.1s ease-in-out;
 }
 
 .hidden {
-  display: none;
+    display: none;
 }
+  

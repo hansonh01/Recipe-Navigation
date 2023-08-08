@@ -37,6 +37,12 @@ document.addEventListener('DOMContentLoaded',()=>{
                     } else {
                         loadSelection(filters[filter].container, filters[filter].url, filters[filter].displayFunction);
                     };
+                    if(commentForm.classList.contains('hidden')){
+                        commentsContainer.classList.add('hidden')
+                    }else{
+                        commentForm.classList.add('hidden');
+                        commentsContainer.classList.add('hidden');
+                    };
                 });
             };
         };
@@ -71,7 +77,6 @@ function createCategoryCard(container,meal){
     const categoryCard = document.createElement('div');
     categoryCard.classList.add('category-card');
 
-
     const img = document.createElement('img');
     img.src = meal.strCategoryThumb;
     img.alt = meal.strCategory;
@@ -92,7 +97,6 @@ function createCategoryCard(container,meal){
 };
 
 function createCuisineCard(container,meal){
-    container.innerText='';
     const cuisineCard = document.createElement('button');
     cuisineCard.textContent = meal.strArea;
     cuisineCard.classList.add('cuisine-item');
@@ -169,7 +173,6 @@ function loadComments(mealId, container) {
 function createCommentElement(comment) {
     const commentCard = document.createElement('div');
     commentCard.classList.add('comment');
-    //commentCard.id = comment.idMeal;
 
     const userName = document.createElement('h2');
     userName.textContent = `Comment by: ${comment.name}`;
